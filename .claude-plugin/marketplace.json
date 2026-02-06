@@ -14,7 +14,8 @@
       "source": "./",
       "strict": false,
       "skills": [
-        "./skills/carly-code-review"
+        "./skills/carly-code-review",
+        "./skills/carly-tech-spec"
       ],
       "agents": [
         "./agents/correctness-reviewer.md",

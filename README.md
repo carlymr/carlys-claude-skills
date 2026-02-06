@@ -44,6 +44,23 @@ Also works in CI via `claude -p`:
 claude -p "/carly-code-review 123"
 ```
 
+### carly-tech-spec
+
+Guided co-authoring of technical design specifications. Works through a fixed template section by section:
+- **Problem Statement** — the actual customer problem (not a user story)
+- **Goals & Non-Goals** — scope boundaries
+- **Current State** — how things work today
+- **Proposed Solution** — architecture, data model, APIs
+- **Alternatives Considered** — what else was evaluated and why
+- **Risks & Open Questions** — unknowns and dependencies
+- **Milestones & Sequencing** — incremental delivery plan
+
+Coaches you through each section with targeted questions, pushes back on vague answers, and optionally tests the finished spec with a fresh reader.
+
+```
+/carly-tech-spec
+```
+
 ## Repo Structure
 
 ```
@@ -51,5 +68,6 @@ claude -p "/carly-code-review 123"
   marketplace.json        # Marketplace catalog (defines the carly-tools plugin)
 skills/
   carly-code-review/SKILL.md  # Code review orchestrator skill
+  carly-tech-spec/SKILL.md    # Tech spec coauthoring skill
 agents/                   # Specialized sub-agents
 ```

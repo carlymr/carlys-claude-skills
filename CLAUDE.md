@@ -26,7 +26,4 @@ This is a Claude Code plugin marketplace repo. The marketplace defines a single 
 ## Current skills
 
 - **carly-code-review** — orchestrator + 6 reviewer sub-agents for comprehensive code review
-
-## Planned skills
-
-- **tech-spec** — technical design spec coauthoring
+- **carly-tech-spec** — guided tech spec coauthoring with fixed template and Problem Statement emphasis
