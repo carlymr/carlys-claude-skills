@@ -18,7 +18,7 @@ Install the plugin:
 
 ## Available Skills
 
-### code-review
+### carly-code-review
 
 Comprehensive code review using 6 parallel specialized sub-agents:
 - **Correctness** — bugs, logic errors, missing edge cases
@@ -33,15 +33,15 @@ The orchestrator assesses project maturity (prototype vs production) to calibrat
 Supports local git diff (no arguments) or GitHub PR review with inline comments.
 
 ```
-/carly-tools:code-review
-/carly-tools:code-review 123
-/carly-tools:code-review https://github.com/org/repo/pull/123
+/carly-code-review
+/carly-code-review 123
+/carly-code-review https://github.com/org/repo/pull/123
 ```
 
 Also works in CI via `claude -p`:
 
 ```bash
-claude -p "/carly-tools:code-review 123"
+claude -p "/carly-code-review 123"
 ```
 
 ## Repo Structure
@@ -50,6 +50,6 @@ claude -p "/carly-tools:code-review 123"
 .claude-plugin/
   marketplace.json        # Marketplace catalog (defines the carly-tools plugin)
 skills/
-  code-review/SKILL.md    # Code review orchestrator skill
+  carly-code-review/SKILL.md  # Code review orchestrator skill
 agents/                   # Specialized sub-agents
 ```
