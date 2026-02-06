@@ -28,9 +28,27 @@ gh pr view $ARGUMENTS
 
 If the diff is empty, tell the user and stop.
 
-## Step 2 — Delegate to 6 reviewers in parallel
+## Step 2 — Assess project context
 
-Launch all 6 reviewer sub-agents in a **single message** using the Task tool. Pass each one the full diff, changed file list, and PR description (if available).
+Before delegating, determine the project's maturity and what kind of review rigor is appropriate. Check these signals (in parallel where possible):
+
+- **CLAUDE.md** — Read it if it exists. Look for project stage, conventions, or quality expectations.
+- **PR description / commit messages** — Look for keywords like "prototype," "POC," "hack week," "production," "migration," "v2," etc.
+- **Repo signals** — Check for CI config, test directories, linting config, Docker/k8s files, dependency lock files. Their presence (or absence) indicates maturity.
+
+Classify the project context as one of:
+
+| Context | Signals | Review calibration |
+|---|---|---|
+| **Prototype / POC** | "proof of concept," "demo," "experiment," no CI, few tests, small repo | Focus on correctness and security. Downgrade performance, simplicity, and integration findings to Suggestion at most. |
+| **Active development** | Feature branches, growing test suite, some CI | Standard review across all areas. |
+| **Production / Enterprise** | Mature CI/CD, extensive tests, monitoring, infra config, "production" or "enterprise" in docs | Full rigor. Performance and security findings get extra weight. |
+
+Pass this context classification to each sub-agent so they can calibrate their own severity assessments.
+
+## Step 3 — Delegate to 6 reviewers in parallel
+
+Launch all 6 reviewer sub-agents in a **single message** using the Task tool. Pass each one the full diff, changed file list, PR description (if available), and the project context classification from Step 2.
 
 The 6 reviewer agents are:
 1. **correctness-reviewer** — bugs, logic errors, edge cases
@@ -47,19 +65,21 @@ Each agent returns findings in this format:
 **Suggested fix:** [fix]
 ```
 
-## Step 3 — Synthesize
+## Step 4 — Synthesize
 
 1. **Verify.** For each Critical/Warning finding, read the file yourself with Read. Drop false positives.
-2. **De-duplicate.** If multiple agents flagged the same issue, keep the most specific version. Note which other areas also flagged it.
-3. **Drop downstream noise.** If fixing a Critical would resolve a Suggestion, drop the Suggestion.
-4. **Prioritize.** Critical → Warning → Suggestion. Within each severity, group by file.
+2. **Recalibrate severity.** Apply the project context from Step 2. For a prototype, downgrade performance and simplicity Warnings to Suggestions. For production code, consider promoting security and performance Suggestions to Warnings.
+3. **De-duplicate.** If multiple agents flagged the same issue, keep the most specific version. Note which other areas also flagged it.
+4. **Drop downstream noise.** If fixing a Critical would resolve a Suggestion, drop the Suggestion.
+5. **Prioritize.** Critical → Warning → Suggestion. Within each severity, group by file.
 
-## Step 4 — Report
+## Step 5 — Report
 
 ```markdown
 # Code Review Report
 
 ## Summary
+**Project context:** [Prototype / Active development / Production]
 [1-2 sentences: count of findings by severity, highlight the most important issues]
 
 ## Critical
