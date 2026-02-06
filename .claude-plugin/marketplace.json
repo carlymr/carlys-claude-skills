@@ -9,9 +9,14 @@
   },
   "plugins": [
     {
-      "name": "carly-code-review",
-      "source": "./plugins/carly-code-review",
-      "description": "Comprehensive code review using parallel specialized sub-agents for correctness, security, performance, simplicity, UX, and codebase integration"
+      "name": "carly-tools",
+      "description": "Carly's collection of Claude Code skills and agents",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/code-review"
+      ],
+      "agents": "./agents/"
     }
   ]
 }

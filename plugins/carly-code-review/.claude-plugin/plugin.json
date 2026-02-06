@@ -1,8 +1,0 @@
-{
-  "name": "carly-code-review",
-  "description": "Comprehensive code review using parallel specialized sub-agents for correctness, security, performance, simplicity, UX, and codebase integration",
-  "version": "1.0.0",
-  "author": {
-    "name": "Carly Rector"
-  }
-}

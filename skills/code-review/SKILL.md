@@ -1,5 +1,5 @@
 ---
-name: carly-code-review
+name: code-review
 description: "Comprehensive code review using 6 parallel specialized sub-agents (correctness, security, performance, simplicity, UX, codebase integration). Synthesizes findings into a prioritized report with de-duplication and false positive filtering. Use when reviewing code changes, pull requests, or local diffs. Supports local git diff (no arguments) or GitHub PR (pass PR number or URL as argument)."
 disable-model-invocation: true
 argument-hint: "[PR number or URL] (optional, defaults to local diff)"
