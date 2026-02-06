@@ -16,7 +16,14 @@
       "skills": [
         "./skills/code-review"
       ],
-      "agents": "./agents/"
+      "agents": [
+        "./agents/correctness-reviewer.md",
+        "./agents/security-reviewer.md",
+        "./agents/performance-reviewer.md",
+        "./agents/simplicity-reviewer.md",
+        "./agents/ux-reviewer.md",
+        "./agents/integration-reviewer.md"
+      ]
     }
   ]
 }
