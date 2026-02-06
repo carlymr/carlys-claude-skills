@@ -12,11 +12,13 @@ Coordinate a code review by delegating to 6 specialized reviewer sub-agents in p
 
 ## Step 1 — Get the diff
 
-**No arguments?** Review local changes:
+**No arguments?** Review local uncommitted and staged changes against the default branch:
 ```bash
-git diff
-git diff --cached
-git diff --name-only && git diff --cached --name-only
+# Detect the default branch (don't assume main)
+git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'
+# Diff current working tree against the default branch
+git diff <default-branch>
+git diff <default-branch> --name-only
 ```
 
 **PR number or URL passed in `$ARGUMENTS`?** Fetch from GitHub:
