@@ -102,10 +102,16 @@ Each agent returns findings in this format:
 
 Omit empty severity sections. If no findings at all, say so.
 
-### PR inline comments
+### PR comments
 
-When reviewing a **GitHub PR**, also post inline comments for Critical and Warning findings:
+When reviewing a **GitHub PR**, also post the findings to the PR itself:
 
+**Summary review comment** — post the full report as a PR review:
+```bash
+gh pr review $PR_NUMBER --comment --body "<full markdown report from above>"
+```
+
+**Inline comments** — post Critical and Warning findings as inline comments on the specific lines:
 ```bash
 gh api repos/{owner}/{repo}/pulls/{pr_number}/comments \
   --method POST \
@@ -117,4 +123,4 @@ gh api repos/{owner}/{repo}/pulls/{pr_number}/comments \
 **Suggested fix:** [fix]"
 ```
 
-Do not post Suggestions as PR comments — those go only in the conversation report.
+Do not post Suggestions as inline comments — those go only in the summary review comment.
