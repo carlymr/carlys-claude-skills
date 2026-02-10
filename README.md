@@ -88,7 +88,7 @@ jobs:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           plugin_marketplaces: "https://github.com/carlymr/carlys-claude-skills.git"
           plugins: "carly-tools@carlys-claude-skills"
-          claude_args: '--allowedTools "Bash(git *),Bash(gh *)"'
+          claude_args: '--allowedTools "Bash(git *),Bash(gh *),Write"'
           prompt: "/carly-code-review ${{ github.event.pull_request.number }}"
 ```
 
@@ -103,7 +103,7 @@ The workflow needs these permissions:
 - **`pull-requests: write`** — so the review can post comments on the PR
 - **`id-token: write`** — required by claude-code-action for OIDC authentication
 
-The `--allowedTools "Bash(git *),Bash(gh *)"` flag grants the skill permission to run git and GitHub CLI commands (fetching diffs, posting review comments).
+The `--allowedTools` flag grants the skill permission to run git/gh commands and write temp files (for posting the review report via `--body-file`).
 
 ## Repo Structure
 

@@ -3,7 +3,7 @@ name: carly-code-review
 description: "Comprehensive code review using 6 parallel specialized sub-agents (correctness, security, performance, simplicity, UX, codebase integration). Synthesizes findings into a prioritized report with de-duplication and false positive filtering. Use when reviewing code changes, pull requests, or local diffs. Supports local git diff (no arguments) or GitHub PR (pass PR number or URL as argument)."
 disable-model-invocation: true
 argument-hint: "[PR number or URL] (optional, defaults to local diff)"
-allowed-tools: Bash(git *), Bash(gh *), Read, Grep, Glob, Task
+allowed-tools: Bash(git *), Bash(gh *), Read, Write, Grep, Glob, Task
 ---
 
 # Code Review Orchestrator
@@ -27,6 +27,16 @@ gh pr diff $ARGUMENTS
 gh pr diff $ARGUMENTS --name-only
 gh pr view $ARGUMENTS
 ```
+
+**Incremental review (PR update)?** Check if this PR already has a prior review comment from a previous run by looking for an existing comment starting with "# Code Review Report":
+```bash
+gh pr view $ARGUMENTS --comments --json comments
+```
+If a prior review exists, get only the new changes since that review. Use the timestamp of the prior review comment to find new commits:
+```bash
+gh api repos/{owner}/{repo}/pulls/{pr_number}/commits
+```
+Then diff only the new commits rather than the full PR diff. Mention in the report header that this is an incremental review of new changes since the last review.
 
 If the diff is empty, tell the user and stop.
 
@@ -104,11 +114,12 @@ Omit empty severity sections. If no findings at all, say so.
 
 ### PR comments
 
-When reviewing a **GitHub PR**, also post the findings to the PR itself:
+When reviewing a **GitHub PR**, also post the findings to the PR itself.
 
-**Summary review comment** — post the full report as a PR review:
+**Important:** Use the Write tool to write the report to a temp file, then pass it via `--body-file` to avoid shell escaping issues:
 ```bash
-gh pr review $PR_NUMBER --comment --body "<full markdown report from above>"
+# After writing the report to /tmp/review-report.md with the Write tool:
+gh pr review $PR_NUMBER --comment --body-file /tmp/review-report.md
 ```
 
 **Inline comments** — post Critical and Warning findings as inline comments on the specific lines:
@@ -118,9 +129,12 @@ gh api repos/{owner}/{repo}/pulls/{pr_number}/comments \
   -f path="<file>" \
   -f line=<line_number> \
   -f side="RIGHT" \
-  -f body="**[SEVERITY]**: [description]
-
-**Suggested fix:** [fix]"
+  -f body="**[SEVERITY]**: [description]. **Suggested fix:** [fix]"
 ```
 
 Do not post Suggestions as inline comments — those go only in the summary review comment.
+
+### Tool usage notes
+
+- Use the **Grep** and **Read** tools to search and read files — do not shell out to `grep`, `cat`, or `find` via Bash.
+- Only use **Bash** for `git` and `gh` commands.
