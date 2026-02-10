@@ -38,11 +38,7 @@ Supports local git diff (no arguments) or GitHub PR review with inline comments.
 /carly-code-review https://github.com/org/repo/pull/123
 ```
 
-Also works in CI via `claude -p`:
-
-```bash
-claude -p "/carly-code-review 123"
-```
+Also works in CI — see [GitHub Action Setup](#github-action-setup) below.
 
 ### carly-tech-spec
 
@@ -60,6 +56,54 @@ Coaches you through each section with targeted questions, pushes back on vague a
 ```
 /carly-tech-spec
 ```
+
+## GitHub Action Setup
+
+You can run `carly-code-review` automatically on pull requests using [claude-code-action](https://github.com/anthropics/claude-code-action).
+
+### 1. Add a workflow file
+
+Create `.github/workflows/code-review.yml` in your target repo:
+
+```yaml
+name: Code Review
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          plugin_marketplaces: "https://github.com/carlymr/carlys-claude-skills.git"
+          plugins: "carly-tools@carlys-claude-skills"
+          claude_args: '--allowedTools "Bash(git *),Bash(gh *)"'
+          prompt: "/carly-code-review ${{ github.event.pull_request.number }}"
+```
+
+### 2. Add your API key
+
+Go to your repo's **Settings > Secrets and variables > Actions** and add `ANTHROPIC_API_KEY`.
+
+### 3. Permissions
+
+The workflow needs these permissions:
+- **`contents: read`** — to check out the code
+- **`pull-requests: write`** — so the review can post comments on the PR
+- **`id-token: write`** — required by claude-code-action for OIDC authentication
+
+The `--allowedTools "Bash(git *),Bash(gh *)"` flag grants the skill permission to run git and GitHub CLI commands (fetching diffs, posting review comments).
 
 ## Repo Structure
 
