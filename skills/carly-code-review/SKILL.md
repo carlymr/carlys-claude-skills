@@ -40,7 +40,27 @@ Then diff only the new commits rather than the full PR diff. Mention in the repo
 
 If the diff is empty, tell the user and stop.
 
-## Step 2 — Assess project context
+## Step 2 — Triage: select relevant reviewers
+
+Not every diff needs all 6 reviewers. Before spawning agents, look at what the diff actually touches and skip reviewers that clearly don't apply.
+
+**Always run:** correctness-reviewer.
+
+**Skip when not relevant:**
+
+| Reviewer | Skip when... |
+|---|---|
+| **security-reviewer** | Changes are purely cosmetic (CSS, copy, formatting), test-only, or documentation-only |
+| **performance-reviewer** | Changes are UI-only (templates, styles, static copy) or documentation/config-only with no logic changes |
+| **simplicity-reviewer** | Changes are test-only, documentation-only, or config-only |
+| **ux-reviewer** | Changes are backend-only with no user-facing API, error message, or UI changes |
+| **integration-reviewer** | Diff is a new standalone file with no existing counterparts, or is test/docs-only |
+
+**Trivial changes:** For clearly trivial diffs (typo fix, copy change, dependency bump), skip sub-agents entirely and review directly. State that a full review was not warranted and why.
+
+Note which reviewers were skipped and why in the report summary.
+
+## Step 3 — Assess project context
 
 Before delegating, determine the project's maturity and what kind of review rigor is appropriate. Check these signals (in parallel where possible):
 
@@ -58,9 +78,9 @@ Classify the project context as one of:
 
 Pass this context classification to each sub-agent so they can calibrate their own severity assessments.
 
-## Step 3 — Delegate to 6 reviewers in parallel
+## Step 4 — Delegate to selected reviewers in parallel
 
-Launch all 6 reviewer sub-agents in a **single message** using the Task tool. Pass each one the full diff, changed file list, PR description (if available), and the project context classification from Step 2.
+Launch the selected reviewer sub-agents (from Step 2) in a **single message** using the Task tool. Pass each one the full diff, changed file list, PR description (if available), and the project context classification from Step 3.
 
 The 6 reviewer agents are:
 1. **correctness-reviewer** — bugs, logic errors, edge cases
@@ -77,15 +97,15 @@ Each agent returns findings in this format:
 **Suggested fix:** [fix]
 ```
 
-## Step 4 — Synthesize
+## Step 5 — Synthesize
 
 1. **Verify.** For each Critical/Warning finding, read the file yourself with Read. Drop false positives.
-2. **Recalibrate severity.** Apply the project context from Step 2. For a prototype, downgrade performance and simplicity Warnings to Suggestions. For production code, consider promoting security and performance Suggestions to Warnings.
+2. **Recalibrate severity.** Apply the project context from Step 3. For a prototype, downgrade performance and simplicity Warnings to Suggestions. For production code, consider promoting security and performance Suggestions to Warnings.
 3. **De-duplicate.** If multiple agents flagged the same issue, keep the most specific version. Note which other areas also flagged it.
 4. **Drop downstream noise.** If fixing a Critical would resolve a Suggestion, drop the Suggestion.
 5. **Prioritize.** Critical → Warning → Suggestion. Within each severity, group by file.
 
-## Step 5 — Report
+## Step 6 — Report
 
 ```markdown
 # Code Review Report
