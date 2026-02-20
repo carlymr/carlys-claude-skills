@@ -1,6 +1,6 @@
 ---
 name: carly-code-review
-description: "Comprehensive code review using 6 parallel specialized sub-agents (correctness, security, performance, simplicity, UX, codebase integration). Synthesizes findings into a prioritized report with de-duplication and false positive filtering. Use when reviewing code changes, pull requests, or local diffs. Supports local git diff (no arguments) or GitHub PR (pass PR number or URL as argument)."
+description: "Comprehensive code review using 7 parallel specialized sub-agents (correctness, security, performance, simplicity, UX, codebase integration, documentation). Synthesizes findings into a prioritized report with de-duplication and false positive filtering. Use when reviewing code changes, pull requests, or local diffs. Supports local git diff (no arguments) or GitHub PR (pass PR number or URL as argument)."
 disable-model-invocation: true
 argument-hint: "[PR number or URL] (optional, defaults to local diff)"
 allowed-tools: Bash(git *), Bash(gh *), Read, Write, Grep, Glob, Task
@@ -8,7 +8,7 @@ allowed-tools: Bash(git *), Bash(gh *), Read, Write, Grep, Glob, Task
 
 # Code Review Orchestrator
 
-Coordinate a code review by delegating to 6 specialized reviewer sub-agents in parallel, then synthesize their findings into a single actionable report.
+Coordinate a code review by delegating to specialized reviewer sub-agents in parallel, then synthesize their findings into a single actionable report.
 
 ## Step 1 — Get the diff
 
@@ -42,9 +42,9 @@ If the diff is empty, tell the user and stop.
 
 ## Step 2 — Triage: select relevant reviewers
 
-Not every diff needs all 6 reviewers. Before spawning agents, look at what the diff actually touches and skip reviewers that clearly don't apply.
+Not every diff needs all 7 reviewers. Before spawning agents, look at what the diff actually touches and skip reviewers that clearly don't apply.
 
-**Always run:** correctness-reviewer.
+**Always run:** correctness-reviewer, documentation-reviewer.
 
 **Skip when not relevant:**
 
@@ -82,13 +82,14 @@ Pass this context classification to each sub-agent so they can calibrate their o
 
 Launch the selected reviewer sub-agents (from Step 2) in a **single message** using the Task tool. Pass each one the full diff, changed file list, PR description (if available), and the project context classification from Step 3.
 
-The 6 reviewer agents are:
+The 7 reviewer agents are:
 1. **correctness-reviewer** — bugs, logic errors, edge cases
 2. **security-reviewer** — vulnerabilities, injection, auth, secrets
 3. **performance-reviewer** — complexity, N+1, allocations, caching
 4. **simplicity-reviewer** — over-engineering, unnecessary abstractions
 5. **ux-reviewer** — confusing APIs, error messages, accessibility
 6. **integration-reviewer** — duplicated functionality, pattern mismatches
+7. **documentation-reviewer** — CLAUDE.md adherence, outdated READMEs, stale docs
 
 Each agent returns findings in this format:
 ```
