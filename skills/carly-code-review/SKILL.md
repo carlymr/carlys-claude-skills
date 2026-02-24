@@ -28,15 +28,22 @@ gh pr diff $ARGUMENTS --name-only
 gh pr view $ARGUMENTS
 ```
 
-**Incremental review (PR update)?** Check if this PR already has a prior review comment from a previous run by looking for an existing comment starting with "# Code Review Report":
+**Incremental review (PR update)?** Before fetching the full diff, check if this PR already has a prior review from a previous run. Reviews posted via `gh pr review` appear under `reviews`, not `comments`:
 ```bash
-gh pr view $ARGUMENTS --comments --json comments
+gh pr view $ARGUMENTS --json reviews --jq '.reviews[] | select(.body | startswith("# Code Review Report")) | {createdAt: .submittedAt}'
 ```
-If a prior review exists, get only the new changes since that review. Use the timestamp of the prior review comment to find new commits:
-```bash
-gh api repos/{owner}/{repo}/pulls/{pr_number}/commits
-```
-Then diff only the new commits rather than the full PR diff. Mention in the report header that this is an incremental review of new changes since the last review.
+If a prior review exists:
+
+1. Note the `submittedAt` timestamp of the most recent review
+2. Get the PR commits and find which were pushed after that timestamp:
+   ```bash
+   gh pr view $ARGUMENTS --json commits
+   ```
+3. Diff only the new commits: `git diff <last-reviewed-commit-sha>..<latest-commit-sha>`
+4. **Only review the new diff**, not the full PR
+5. Start the report with: `**Incremental review** — reviewing changes since last review (<timestamp>).`
+
+If there are no new commits since the last review, say so and stop.
 
 If the diff is empty, tell the user and stop.
 
