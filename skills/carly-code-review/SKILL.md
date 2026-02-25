@@ -35,13 +35,18 @@ gh pr view $ARGUMENTS --json reviews --jq '.reviews[] | select(.body | startswit
 If a prior review exists:
 
 1. Note the `submittedAt` timestamp of the most recent review
-2. Get the PR commits and find which were pushed after that timestamp:
+2. Read the full PR conversation — reviews, comments, and review comment replies:
+   ```bash
+   gh pr view $ARGUMENTS --json reviews,comments
+   ```
+   This gives you context on which prior suggestions were accepted, rejected, or discussed. Do not re-raise findings that the author has already responded to with a justification.
+3. Get the PR commits and find which were pushed after that timestamp:
    ```bash
    gh pr view $ARGUMENTS --json commits
    ```
-3. Diff only the new commits: `git diff <last-reviewed-commit-sha>..<latest-commit-sha>`
-4. **Only review the new diff**, not the full PR
-5. Start the report with: `**Incremental review** — reviewing changes since last review (<timestamp>).`
+4. Diff only the new commits: `git diff <last-reviewed-commit-sha>..<latest-commit-sha>`
+5. **Only review the new diff**, not the full PR
+6. Start the report with: `**Incremental review** — reviewing changes since last review (<timestamp>).`
 
 If there are no new commits since the last review, say so and stop.
 
