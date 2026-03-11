@@ -56,7 +56,7 @@ If the diff is empty, tell the user and stop.
 
 Not every diff needs all 7 reviewers. Before spawning agents, look at what the diff actually touches and skip reviewers that clearly don't apply.
 
-**Always run:** correctness-reviewer, documentation-reviewer.
+**Always run:** correctness-reviewer, simplicity-reviewer, documentation-reviewer.
 
 **Skip when not relevant:**
 
@@ -64,7 +64,6 @@ Not every diff needs all 7 reviewers. Before spawning agents, look at what the d
 |---|---|
 | **security-reviewer** | Changes are purely cosmetic (CSS, copy, formatting), test-only, or documentation-only |
 | **performance-reviewer** | Changes are UI-only (templates, styles, static copy) or documentation/config-only with no logic changes |
-| **simplicity-reviewer** | Changes are test-only, documentation-only, or config-only |
 | **ux-reviewer** | Changes are backend-only with no user-facing API, error message, or UI changes |
 | **integration-reviewer** | Changes are test-only or documentation-only. **Do not skip** for new files — new code should still follow existing codebase conventions and patterns. |
 
