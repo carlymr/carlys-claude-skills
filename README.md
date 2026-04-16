@@ -105,6 +105,71 @@ The workflow needs these permissions:
 
 The `--allowedTools` flag grants the skill permission to run git/gh commands and write temp files (for posting the review report via `--body-file`).
 
+## Auto-Review on `gh pr create` (Local Hook)
+
+If you'd rather review PRs locally the moment Claude opens them, wire up a `PostToolUse` hook that detects `gh pr create` and nudges the agent to invoke `carly-code-review` on the new PR URL — no GitHub Action required.
+
+### 1. Save the hook script
+
+Save this as `~/.claude/hooks/carly-code-review-on-pr-create.sh` and `chmod +x` it:
+
+```bash
+#!/usr/bin/env bash
+# PostToolUse hook: when `gh pr create` succeeds, inject a reminder telling
+# the main agent to run carly-code-review on the new PR in a fresh subagent.
+set -euo pipefail
+
+input=$(cat)
+
+tool_name=$(echo "$input" | jq -r '.tool_name // ""')
+if [ "$tool_name" != "Bash" ]; then
+  exit 0
+fi
+
+command=$(echo "$input" | jq -r '.tool_input.command // ""')
+if ! echo "$command" | grep -q "gh pr create"; then
+  exit 0
+fi
+
+output=$(echo "$input" | jq -r '[.tool_response.stdout // "", .tool_response.output // ""] | join("\n")')
+
+pr_url=$(echo "$output" | grep -oE 'https://github\.com/[^/ ]+/[^/ ]+/pull/[0-9]+' | head -n 1 || true)
+if [ -z "$pr_url" ]; then
+  exit 0
+fi
+
+jq -n --arg url "$pr_url" '{
+  hookSpecificOutput: {
+    hookEventName: "PostToolUse",
+    additionalContext: ("A pull request was just opened at \($url). Invoke the carly-code-review skill now with this URL as the argument so a fresh subagent reviews the PR. Do not wait for the user to ask.")
+  }
+}'
+```
+
+The hook never blocks the tool call — on any non-match or parse failure it silently exits 0. On a successful `gh pr create`, it injects a system reminder that nudges the main agent to invoke the skill on the new PR.
+
+### 2. Register the hook in settings.json
+
+Add this to `~/.claude/settings.json` (or your project's `.claude/settings.json`):
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/carly-code-review-on-pr-create.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
 ## Repo Structure
 
 ```
