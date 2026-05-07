@@ -72,21 +72,35 @@ Note which reviewers were skipped and why in the report summary.
 
 ## Step 3 — Assess project context
 
-Before delegating, determine the project's maturity and what kind of review rigor is appropriate. Check these signals (in parallel where possible):
+Before delegating, determine what kind of review rigor is appropriate. Project context is **two independent axes** — they're not a single scale. A small internal compliance tool can be high-consequence and low-scale; a free consumer game can be high-scale and low-consequence. Each axis tunes a different set of reviewers.
 
-- **CLAUDE.md** — Read it if it exists. Look for project stage, conventions, or quality expectations.
-- **PR description / commit messages** — Look for keywords like "prototype," "POC," "hack week," "production," "migration," "v2," etc.
-- **Repo signals** — Check for CI config, test directories, linting config, Docker/k8s files, dependency lock files. Their presence (or absence) indicates maturity.
+**Look for explicit signals first.** Check CLAUDE.md and README.md for stated context (e.g., "pre-launch," "early customers," "handles PII," "SOC 2," "internal tool," "consumer-facing at scale"). An explicit statement from the author overrides anything you'd infer from the code.
 
-Classify the project context as one of:
+**If no explicit signal exists**, infer from PR description, commit messages, and repo signals (CI, tests, infra config, dependency footprint, domain hints in the code). Be conservative — modern tooling like CI and tests is cheap and present in most projects regardless of maturity, so it's a weak signal on its own.
 
-| Context | Signals | Review calibration |
+### Axis 1 — Scale (tunes performance, simplicity, architecture)
+
+| Scale | Signals | Calibration |
 |---|---|---|
-| **Prototype / POC** | "proof of concept," "demo," "experiment," no CI, few tests, small repo | Focus on correctness and security. Downgrade performance, simplicity, and integration findings to Suggestion at most. |
-| **Active development** | Feature branches, growing test suite, some CI | Standard review across all areas. |
-| **Production / Enterprise** | Mature CI/CD, extensive tests, monitoring, infra config, "production" or "enterprise" in docs | Full rigor. Performance and security findings get extra weight. |
+| **Pre-launch** | No real users yet — prototype, POC, MVP, solo build, "experiment." | Drop speculative scale concerns. Downgrade performance and architectural Warnings to Suggestions. |
+| **Early users** | Small number of real users (handful of customers, beta, internal pilot). Project still evolving. | Be measured on performance and architecture. Flag clear regressions; don't optimize prematurely. |
+| **At scale** | Many users, meaningful traffic or data volume, hot paths matter. | Full performance and architectural rigor. Promote performance Suggestions to Warnings where regressions are concrete. |
 
-Pass this context classification to each sub-agent so they can calibrate their own severity assessments.
+### Axis 2 — Consequence (tunes correctness, security, UX)
+
+| Consequence | Signals | Calibration |
+|---|---|---|
+| **Low** | Failure is recoverable and low-impact — internal tool, hobby project, easily-rerun batch job, nothing sensitive. | Standard correctness/security; don't dwell on edge-case hardening. |
+| **Standard** | Normal product code — failures cost user trust or time but aren't catastrophic. | Standard review across correctness, security, UX. |
+| **High** | Failures have real consequences — handles money, PII/PHI, auth, compliance (SOC 2, HIPAA, GDPR), safety, or other irreversible effects. | Full rigor on correctness and security. Promote security and correctness Suggestions to Warnings where realistic. Take edge cases seriously. |
+
+When ambiguous, default to **Early users / Standard**. Note explicitly in the report that you inferred the context, and suggest the author add a one-line marker to CLAUDE.md so future reviews don't have to guess:
+
+```
+Project context: scale=early-users, consequence=high  # handles customer payment data
+```
+
+Pass both axes to each sub-agent so they can calibrate their own severity assessments.
 
 ## Step 4 — Delegate to selected reviewers in parallel
 
@@ -118,7 +132,7 @@ Each agent returns findings in this format:
    - The fix adds complexity (error handling, validation, abstractions) that makes the code harder to read and maintain
    - The finding is defensive programming against a situation that the system's architecture already prevents
    - The suggestion is "nice to have" hardening with no concrete failure scenario
-3. **Recalibrate severity.** Apply the project context from Step 3. For a prototype, downgrade performance and simplicity Warnings to Suggestions. For production code, consider promoting security and performance Suggestions to Warnings.
+3. **Recalibrate severity.** Apply both project-context axes from Step 3. Use **scale** to tune performance/architecture findings (downgrade for pre-launch, promote for at-scale) and **consequence** to tune correctness/security findings (be lenient for low-consequence, promote Suggestions to Warnings for high-consequence). The two axes are independent — a high-consequence pre-launch tool still warrants strict security review even though performance findings should be soft.
 4. **De-duplicate.** If multiple agents flagged the same issue, keep the most specific version.
 5. **Drop downstream noise.** If fixing a Critical would resolve a Suggestion, drop the Suggestion.
 6. **Prioritize.** Critical → Warning → Suggestion. Within each severity, group by file.
@@ -131,7 +145,7 @@ A report with zero findings is a valid outcome. A short report with only high-im
 # Code Review Report
 
 ## Summary
-**Project context:** [Prototype / Active development / Production]
+**Project context:** scale=[pre-launch / early-users / at-scale], consequence=[low / standard / high] — [explicit from CLAUDE.md/README, or inferred from <signal>; if inferred, suggest adding a `Project context:` line to CLAUDE.md]
 [1-2 sentences: count of findings by severity, highlight the most important issues]
 
 ## Critical
