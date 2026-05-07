@@ -169,20 +169,6 @@ When reviewing a **GitHub PR**, also post the findings to the PR itself.
 gh pr review $PR_NUMBER --comment --body-file /tmp/review-report.md
 ```
 
-**Inline diff comments** — post Critical and Warning findings as inline comments on the specific lines. Write each comment body to a temp file with the Write tool, then post:
-```bash
-gh api repos/{owner}/{repo}/pulls/{pr_number}/comments \
-  --method POST \
-  -f path="<file>" \
-  -f line=<line_number> \
-  -f side="RIGHT" \
-  --body-file /tmp/inline-comment.md
-```
-
-If inline commenting is denied by permissions, do not retry — the summary review comment already contains all findings.
-
-Do not post Suggestions as inline comments — those go only in the summary review comment.
-
 ### Tool usage notes
 
 - Use the **Grep** and **Read** tools to search and read files — do not shell out to `grep`, `cat`, or `find` via Bash.
