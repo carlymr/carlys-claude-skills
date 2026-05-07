@@ -30,7 +30,7 @@ Comprehensive code review using 6 parallel specialized sub-agents:
 
 The orchestrator assesses project maturity (prototype vs production) to calibrate review rigor, then synthesizes all findings — verifying against actual code, de-duplicating, and dropping minor comments that would resolve when fixing larger issues.
 
-Supports local git diff (no arguments) or GitHub PR review with inline comments.
+Supports local git diff (no arguments) or GitHub PR review.
 
 ```
 /carly-code-review
@@ -39,6 +39,21 @@ Supports local git diff (no arguments) or GitHub PR review with inline comments.
 ```
 
 Also works in CI — see [GitHub Action Setup](#github-action-setup) below.
+
+### carly-product-req
+
+Guided co-authoring of a lightweight product requirements doc — aimed at non-technical teammates (PMs, designers, founders) scoping a new idea. Works through a short template section by section:
+- **Problem Statement** — the pain or opportunity, not the solution
+- **Users** — who it's for and what they're trying to accomplish
+- **Goals & Success Signals** — what changes if this works
+- **Scope** — what's in and what's explicitly out
+- **Open Questions** — unknowns to resolve before building
+
+Produces a ~1-page doc that's ready to hand off as input to a tech spec.
+
+```
+/carly-product-req
+```
 
 ### carly-tech-spec
 
@@ -177,6 +192,7 @@ Add this to `~/.claude/settings.json` (or your project's `.claude/settings.json`
   marketplace.json        # Marketplace catalog (defines the carly-tools plugin)
 skills/
   carly-code-review/SKILL.md  # Code review orchestrator skill
+  carly-product-req/SKILL.md  # Product requirements coauthoring skill
   carly-tech-spec/SKILL.md    # Tech spec coauthoring skill
 agents/                   # Specialized sub-agents
 ```
