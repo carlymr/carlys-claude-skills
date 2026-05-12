@@ -13,15 +13,20 @@ Use this template to scaffold the spec document. Replace bracketed placeholders 
 
 ## Problem Statement
 
-> This is the most important section. Describe the actual customer/user problem — not a feature request, not a user story, not a solution. Focus on the pain: what's broken, what's frustrating, what's impossible today. A good problem statement makes the reader understand *why* this work matters before they see *what* you're proposing.
+> This is the most important section. Describe a pain that real users or customers are experiencing in their lives or work today — something that's broken, frustrating, costly, or impossible for them right now. The test: if no one ever built this product, would someone still be hurting? If yes, you have a problem worth solving.
 >
 > Answer these questions:
-> - What problem are real users/customers hitting?
-> - What's the impact — how bad is it, and for how many people?
-> - What happens if we don't solve it?
-> - Why now? What's changed that makes this urgent or timely?
+> - Who is feeling this pain, and how do you know? (What have they said or done?)
+> - What are they trying to accomplish, and what's getting in their way?
+> - What's the cost to them of the status quo — time, money, missed outcomes, frustration?
+> - What do they do today instead? (Workarounds, competitors, giving up.)
+> - Why now? What's changed for them that makes this more pressing?
 >
-> Keep it to 1-3 paragraphs. If you can't state the problem clearly, the spec isn't ready.
+> Keep the focus on the user or customer throughout. Business-side outcomes you want (revenue, growth, launches) are goals, not problems — they belong in the Goals section. If the only "problem" you can name is "we want to monetize" or "we want to grow," the spec is likely premature; the user problem isn't clear enough yet.
+>
+> Cost/revenue framings deserve extra scrutiny. "Infra costs outpace revenue" is a symptom, not a problem. Ask: is the infra solving a real user problem? If yes, that user problem is the problem statement (and monetization is a solution). If no, the answer is to stop spending the money, not to charge for it.
+>
+> Keep it to 1-3 paragraphs. Don't name the proposed solution here.
 
 [Problem statement here]
 
