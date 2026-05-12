@@ -67,13 +67,15 @@ Section-specific guidance:
 
 ## Step 4 — Review & polish
 
-Re-read the full spec file. Check for:
+Re-read the full spec file. The goal is a crisp, focused document — every sentence should earn its place. Check for:
 - Does the proposed solution actually solve the problem statement?
 - Are there contradictions between sections?
 - Is anything redundant or filler?
+- Is anything **over-specified** — implementation detail that could reasonably be figured out at coding time, not decided in the spec?
+- Is anything **speculative** — hypothetical future scenarios, edge cases that may never occur, or hedging that doesn't change the design?
 - Would the target audience understand this without additional context?
 
-Suggest specific edits. Apply them after user approval.
+Default to cutting. If a paragraph could be deleted without changing what gets built, it should be. Suggest specific edits — including specific deletions — and apply them after user approval.
 
 Update the spec's status field to "In Review" when the user is satisfied.
 
