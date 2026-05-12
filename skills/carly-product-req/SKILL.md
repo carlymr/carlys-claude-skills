@@ -28,16 +28,24 @@ Tell the user the file has been created and that you'll work through each sectio
 
 This is the most important section. Spend the most time here.
 
-Ask the user to describe the problem or opportunity in their own words. Then ask clarifying questions:
-- "What's the pain or gap you're seeing?"
-- "If this already sort of exists somewhere, why isn't that good enough?"
-- "If this is brand new — what makes you believe people need it?"
-- "What happens if you don't build this?"
-- "Why now?"
+A real problem statement describes **a pain that real users or customers are experiencing in their lives or work today** — something that's broken, frustrating, costly, or impossible for them right now. The test is: if no one ever built this product, would someone still be hurting? If yes, that's a problem. If no, there isn't one yet.
 
-Draft the Problem Statement (1-2 paragraphs). Focus on the **problem or opportunity**, not the solution. If the user jumps to describing a solution, gently redirect: "Let's capture *why* this matters first — we'll get to the *what* next."
+Ask the user to describe the problem in their own words. Then ask clarifying questions that drive toward concrete, external pain:
+- "Who specifically is feeling this, and how do you know? What have they said or done?"
+- "What are they trying to accomplish, and what's getting in their way today?"
+- "What's the cost to them of the status quo — time, money, missed outcomes, frustration?"
+- "What do they do today instead? (Workarounds, competing products, giving up.)"
+- "Why now? What's changed for them that makes this more pressing?"
 
-Show the draft and iterate. A good problem statement should make someone with no context understand why this work matters.
+Stay focused on the user/customer throughout. If their answer drifts toward the business ("we need recurring revenue", "we want to grow MAUs", "we need to monetize", "we want to launch X"), that's a **goal or solution, not a problem**. Gently redirect: those outcomes are things *they* want — what's the user-side pain that, if solved, would make those outcomes follow?
+
+Be especially careful with cost/revenue framings. "Infra costs are outpacing revenue" sounds like a problem, but it isn't one on its own — it's a symptom. The real question is: *is the infra solving a real user problem?* If yes, the problem statement is the user pain, and monetization is one solution to sustain solving it. If no, the answer is to stop spending the money, not to charge for it. Push on this distinction.
+
+It's a valid (and important) outcome for this conversation to surface that there isn't a user problem yet — only a business desire. In that case, name it and suggest pausing the doc until the user problem is clearer. Better to catch this here than after building.
+
+Draft the Problem Statement (1-2 paragraphs) once you have a clear user-side pain. Describe the pain and its impact on real people. Don't name the proposed solution. Don't use user-story format ("As a user, I want...").
+
+Show the draft and iterate. A good problem statement should make someone with no context understand why this work matters for the people experiencing the pain.
 
 Update the doc with the finalized Problem Statement before moving on.
 
