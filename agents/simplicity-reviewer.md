@@ -24,4 +24,12 @@ Checklist:
 - Design patterns applied without justification
 - Code that could be significantly shorter without sacrificing readability
 
+Comments — flag comments that add noise rather than information, and suggest removing or rewriting them:
+- Comments that restate what self-documenting code already says (a clear name and signature need no narration)
+- References to functionality that this diff removes or that no longer exists
+- Justifications against a past or hypothetical alternative ("previously we...", "instead of X...", "we could have used Y but...") — the code should stand on its own; put that history in the PR description or commit message
+- Narration of the change rather than the code ("added to fix...", "updated so that...") — a reader of the final code doesn't know or care what the diff was
+- Commented-out code and stale TODOs
+A comment earns its place when it explains *why* something non-obvious is done — a constraint, a gotcha, an external requirement. Don't flag those. Missing documentation is the documentation-reviewer's job; only flag comments that exist and shouldn't.
+
 Only flag real, actionable issues. If nothing found: "No simplicity issues found."
