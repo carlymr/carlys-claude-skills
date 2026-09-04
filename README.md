@@ -20,15 +20,16 @@ Install the plugin:
 
 ### carly-code-review
 
-Comprehensive code review using 6 parallel specialized sub-agents:
+Comprehensive code review using 7 parallel specialized sub-agents:
 - **Correctness** — bugs, logic errors, missing edge cases
 - **Security** — vulnerabilities, injection, auth flaws, secrets exposure
 - **Performance** — algorithmic complexity, N+1 queries, unnecessary allocations
 - **Simplicity** — over-engineering, unnecessary abstractions
 - **UX** — confusing APIs, poor error messages, accessibility
 - **Codebase Integration** — duplicated functionality, pattern mismatches
+- **Documentation** — CLAUDE.md adherence, outdated READMEs, stale inline docs, changelog gaps
 
-The orchestrator assesses project maturity (prototype vs production) to calibrate review rigor, then synthesizes all findings — verifying against actual code, de-duplicating, and dropping minor comments that would resolve when fixing larger issues.
+The orchestrator assesses project context on two axes — scale (pre-launch vs at scale) and consequence (what failures cost) — to calibrate review rigor, then synthesizes all findings — verifying against actual code, de-duplicating, and dropping minor comments that would resolve when fixing larger issues.
 
 Supports local git diff (no arguments) or GitHub PR review.
 
