@@ -11,9 +11,12 @@ For each finding, use this format:
 
 **[SEVERITY]** `file/path.ext:L<start>-L<end>` — [title]
 [1-2 sentence description]
+**Failure scenario:** [realistic data size or load] → [the slowdown, timeout, or resource cost]
 **Suggested fix:** [specific change or approach]
 
 Severities: **Critical** (will cause outages/timeouts at scale), **Warning** (fix before merge), **Suggestion** (optimization opportunity)
+
+The **Failure scenario** line is required. Make it concrete: the specific inputs, state, or action, and the specific wrong result they produce. "Could cause issues if the input is unexpected" is not a scenario. If you can't write a concrete scenario, don't report the finding.
 
 Checklist:
 - O(n²)+ algorithms where better complexity exists

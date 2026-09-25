@@ -31,7 +31,12 @@ Comprehensive code review using 7 parallel specialized sub-agents:
 
 The orchestrator assesses project context on two axes — scale (pre-launch vs at scale) and consequence (what failures cost) — to calibrate review rigor, then synthesizes all findings — verifying against actual code, de-duplicating, and dropping minor comments that would resolve when fixing larger issues.
 
-Supports local git diff (no arguments) or GitHub PR review.
+To keep speculative findings out of the report:
+- **Concrete failure scenarios** — every finding must name specific inputs or state and the specific wrong result. Findings without one are dropped.
+- **Adversarial refuter pass** — each Critical/Warning finding goes to a separate `finding-refuter` agent whose job is to disprove it by tracing the scenario through the code. Refuted findings are dropped; uncertain ones are downgraded.
+- **Every bug is a pattern** — when the correctness or security reviewer finds a defect, it searches the codebase for the same shape and lists the other occurrences.
+
+Supports local git diff (no arguments) or GitHub PR review. Local mode diffs against the branch's merge base and includes untracked files. PR mode reviews incrementally on later runs, and falls back to a full re-check (without repeating old findings) when the branch was rebased or force-pushed.
 
 ```
 /carly-code-review
@@ -40,6 +45,19 @@ Supports local git diff (no arguments) or GitHub PR review.
 ```
 
 Also works in CI — see [GitHub Action Setup](#github-action-setup) below.
+
+#### Adding project-specific reviewers
+
+A repo can add its own reviewers without forking the skill by listing them in its CLAUDE.md:
+
+```markdown
+Extra reviewers:
+- spec-conformance-reviewer
+- api-docs: Every new or changed HTTP endpoint must be documented in docs/api.md with a request/response example.
+- migrations: follow the checklist in docs/review/migrations.md
+```
+
+A bare name runs a sub-agent the project defines (e.g., `.claude/agents/spec-conformance-reviewer.md`). A `name: instructions` entry runs a general-purpose agent with those instructions as its checklist. Extra reviewers run alongside the built-in ones, and their findings go through the same failure-scenario filter and refuter pass.
 
 ### carly-product-req
 
