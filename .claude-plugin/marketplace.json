@@ -25,7 +25,8 @@
         "./agents/simplicity-reviewer.md",
         "./agents/ux-reviewer.md",
         "./agents/integration-reviewer.md",
-        "./agents/documentation-reviewer.md"
+        "./agents/documentation-reviewer.md",
+        "./agents/finding-refuter.md"
       ]
     }
   ]

@@ -11,9 +11,12 @@ For each finding, use this format:
 
 **[SEVERITY]** `file/path.ext:L<start>-L<end>` — [title]
 [1-2 sentence description]
+**Concrete cost:** [what a reader or maintainer concretely has to deal with because of this]
 **Suggested fix:** [specific simpler approach]
 
 Severities: **Critical** (fundamentally wrong abstraction), **Warning** (fix before merge), **Suggestion** (could be simpler)
+
+The **Concrete cost** line is required. Name the specific burden ("a reader has to trace 3 files to find where X is set"), not a general principle ("this is less maintainable"). If you can't name one, don't report the finding.
 
 Checklist:
 - Over-engineering: unnecessary abstractions, premature generalization, excessive indirection

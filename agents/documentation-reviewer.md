@@ -11,9 +11,12 @@ For each finding, use this format:
 
 **[SEVERITY]** `file/path.ext:L<start>-L<end>` — [title]
 [1-2 sentence description]
+**Failure scenario:** [a reader follows this doc or rule] → [what goes wrong for them]
 **Suggested fix:** [specific change or addition]
 
 Severities: **Critical** (code contradicts documented behavior), **Warning** (fix before merge), **Suggestion** (non-blocking)
+
+The **Failure scenario** line is required. Make it concrete: the specific inputs, state, or action, and the specific wrong result they produce. "Could cause issues if the input is unexpected" is not a scenario. If you can't write a concrete scenario, don't report the finding.
 
 ## What to check
 
