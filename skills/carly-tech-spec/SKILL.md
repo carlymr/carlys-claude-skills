@@ -1,7 +1,7 @@
 ---
 name: carly-tech-spec
 description: "Co-author a technical design specification through structured conversation. Guides you through problem statement, goals, current state, proposed solution, alternatives, risks, and milestones — with a fixed template and coaching at each step. Use when writing a tech spec, design doc, technical proposal, or RFC."
-allowed-tools: Read, Write, Edit, Glob, Grep, Task
+allowed-tools: Read, Write, Edit, Glob, Grep, Agent, Task
 ---
 
 # Tech Spec Co-Authoring
@@ -17,8 +17,6 @@ Ask the user:
 2. Who is the audience? (engineering team, leadership, cross-functional, etc.)
 
 Create a spec file in the working directory named `tech-spec-<short-name>.md` using the template skeleton from `references/template.md`. Fill in the title, author (ask if unknown), date, and set status to "Draft". Strip the guidance comments (lines starting with `>`) — those are only for your reference during authoring.
-
-Tell the user the file has been created and that you'll work through each section together.
 
 ## Step 2 — Problem Statement
 
@@ -81,16 +79,14 @@ Update the spec's status field to "In Review" when the user is satisfied.
 
 ## Step 5 — Reader test (optional)
 
-Offer to test the spec with a fresh perspective.
-
-**If sub-agents are available** (Claude Code): spawn a Task agent with `subagent_type: "general-purpose"`. Pass it only the spec content (not the conversation history). Ask it to:
+Offer to test the spec with a fresh reader: spawn a general-purpose sub-agent, pass it only the spec content (not the conversation history), and ask it to:
 1. Summarize the proposal in 2-3 sentences
 2. Identify any gaps, ambiguities, or assumptions
 3. List questions a reviewer would likely ask
 
 Report the findings and fix any gaps by looping back to the relevant section.
 
-**If sub-agents aren't available**: suggest the user paste the spec into a fresh Claude conversation and ask the same questions.
+If sub-agents aren't available, suggest the user paste the spec into a fresh Claude conversation and ask the same questions.
 
 ## Tone
 

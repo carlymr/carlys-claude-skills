@@ -1,12 +1,12 @@
 ---
 name: carly-product-req
 description: "Co-author a lightweight product requirements document through structured conversation. Guides non-technical teammates through problem statement, users, goals, success signals, and open questions — producing a short doc (~1 page) that's ready to hand off for a tech spec. Use when writing product requirements, a PRD, feature brief, or scoping a new product idea."
-allowed-tools: Read, Write, Edit, Glob, Grep, Task
+allowed-tools: Read, Write, Edit, Glob, Grep
 ---
 
 # Product Requirements Co-Authoring
 
-Guide the user through writing a lightweight product requirements doc. Work section by section, asking targeted questions and drafting iteratively. The goal is mutual understanding — enough clarity for an engineer to pick this up and start a tech spec — not a comprehensive specification.
+Guide the user through writing a lightweight product requirements doc. Work section by section, asking targeted questions and drafting iteratively. The goal is mutual understanding — enough clarity for an engineer to pick this up and start a tech spec — not a comprehensive specification. Update the doc as each section is finalized, before moving on to the next.
 
 ## Audience awareness
 
@@ -21,8 +21,6 @@ Ask the user:
 2. Who's going to read this? (engineering team, cofounder, investors, etc.)
 
 Create a requirements doc in the working directory named `product-req-<short-name>.md` using the template skeleton from `references/template.md`. Fill in the title, author (ask if unknown), date, and set status to "Draft". Strip the guidance comments (lines starting with `>`) — those are only for your reference during authoring.
-
-Tell the user the file has been created and that you'll work through each section together.
 
 ## Step 2 — Problem Statement
 
@@ -47,20 +45,14 @@ Draft the Problem Statement (1-2 paragraphs) once you have a clear user-side pai
 
 Show the draft and iterate. A good problem statement should make someone with no context understand why this work matters for the people experiencing the pain.
 
-Update the doc with the finalized Problem Statement before moving on.
-
 ## Step 3 — Users
 
-Ask:
-- "Who specifically is this for? A type of user, a role, a segment?"
-- "What are they trying to accomplish?"
-- "How do they handle this today — or do they not at all?"
-- If they don't do it today: "What's changed that makes this worth building now?"
-- If they do something today: "What's frustrating or limiting about their current approach?"
+Step 2 will have surfaced much of this already — draft from what you know and ask only about the gaps:
+- Who specifically is this for? A type of user, a role, a segment?
+- What are they trying to accomplish?
+- How do they handle this today, and what's frustrating or limiting about it? If they don't do it at all, what's changed that makes this worth building now?
 
 Keep this section short — a paragraph or a few bullets. The goal is to ground the rest of the doc in a real person with a real need.
-
-Update the doc before moving on.
 
 ## Step 4 — Goals & Non-Goals
 
@@ -72,8 +64,6 @@ Push for explicit non-goals. Early-stage teams often try to boil the ocean. Non-
 
 Draft goals as concrete outcomes, not tasks. "Users can do X" not "Build X feature."
 
-Update the doc before moving on.
-
 ## Step 5 — How We'll Know It Worked
 
 Ask:
@@ -81,8 +71,6 @@ Ask:
 - "What's the simplest signal — even anecdotal — that this was the right call?"
 
 Keep this to 1-2 signals. Don't push for a metrics framework — a lightweight indicator is fine. "Users stop asking for X in support" or "3 out of 5 pilot customers adopt it" are perfectly good.
-
-Update the doc before moving on.
 
 ## Step 6 — Open Questions
 
@@ -92,8 +80,6 @@ Ask:
 - "Is there anything you'd want a designer or engineer to weigh in on before you finalize this?"
 
 If the user says "nothing" — push gently. There are almost always open questions at this stage. Surface 1-2 based on what you've heard in earlier sections.
-
-Update the doc.
 
 ## Step 7 — Review
 

@@ -12,12 +12,7 @@ Use this template to scaffold the requirements document. Replace bracketed place
 
 ## Problem Statement
 
-> The foundation of the entire document. Describe the problem or opportunity — why does this need to exist? This isn't a feature description or a solution pitch. It's the "why" that makes someone who has no context understand what's at stake.
->
-> Answer these questions:
-> - What problem are users experiencing, or what opportunity are we pursuing?
-> - What's the impact if we build this? What happens if we don't?
-> - Why now?
+> The foundation of the entire document. Describe a pain that real users or customers are experiencing today — who feels it, what it costs them, what they do instead, and why now. This isn't a feature description, a solution pitch, or a business goal. It's the "why" that makes someone who has no context understand what's at stake.
 >
 > Keep it to 1-2 paragraphs. If you can't state this clearly, the requirements aren't ready.
 
