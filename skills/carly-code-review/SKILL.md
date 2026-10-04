@@ -2,7 +2,7 @@
 name: carly-code-review
 description: "Comprehensive code review using 7 parallel specialized sub-agents (correctness, security, performance, simplicity, UX, codebase integration, documentation). Every finding needs a concrete failure scenario; Critical/Warning findings are then challenged by adversarial refuter agents before they reach the report. Repos can add their own reviewers via an `Extra reviewers:` list in CLAUDE.md. Use when reviewing code changes, pull requests, or local diffs. Supports local git diff (no arguments) or GitHub PR (pass PR number or URL as argument)."
 argument-hint: "[PR number or URL] (optional, defaults to local diff)"
-allowed-tools: Bash(git *), Bash(gh *), Read, Write, Grep, Glob, Task
+allowed-tools: Bash(git *), Bash(gh *), Read, Write, Grep, Glob, Agent, Task
 ---
 
 # Code Review Orchestrator
@@ -15,29 +15,21 @@ Coordinate a code review by delegating to specialized reviewer sub-agents in par
 
 Review everything on this branch — commits, staged, unstaged, and untracked files — against where the branch started.
 
-1. **Find the default branch** (don't assume `main`):
-   ```bash
-   git symbolic-ref --short refs/remotes/origin/HEAD
-   ```
-   This prints `origin/<default-branch>`. It fails when `origin/HEAD` was never set (common for repos created with `git init` + `git remote add`). Then ask GitHub:
-   ```bash
-   gh repo view --json defaultBranchRef --jq .defaultBranchRef.name
-   ```
-   If that fails too, check `git rev-parse --verify origin/main`, then `origin/master`.
-2. **Find where the branch started.** Diffing against the default branch's current tip would also show every change that landed there since you branched, reversed. Diff against the merge base instead:
+1. **Find the default branch** (don't assume `main`). Try in order until one works:
+   - `git symbolic-ref --short refs/remotes/origin/HEAD` — prints `origin/<default-branch>`; fails when `origin/HEAD` was never set (common for repos created with `git init` + `git remote add`)
+   - `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name`
+   - `git rev-parse --verify origin/main`, then `origin/master`
+2. **Diff against the merge base**, not the default branch's current tip — the tip would also show every change that landed there since the branch started, reversed. This diff covers committed, staged, and unstaged changes:
    ```bash
    git merge-base HEAD origin/<default-branch>
-   ```
-3. **Get the diff** (committed + staged + unstaged changes since the merge base):
-   ```bash
    git diff <merge-base>
    git diff <merge-base> --name-only
    ```
-4. **Find untracked files**, which `git diff` doesn't show:
+3. **Find untracked files**, which `git diff` doesn't show:
    ```bash
    git status --porcelain --untracked-files=all
    ```
-   Lines starting with `??` are new untracked files. Treat their full contents as added code: include them in the file list and have reviewers Read them.
+   Treat the full contents of `??` entries as added code: include them in the file list and have reviewers Read them.
 
 ### GitHub PR (PR number or URL in `$ARGUMENTS`)
 
@@ -76,7 +68,7 @@ If the diff is empty (and there are no untracked files), tell the user and stop.
 
 ## Step 2 — Triage: select relevant reviewers
 
-Not every diff needs all 7 reviewers. Before spawning agents, look at what the diff actually touches and skip reviewers that clearly don't apply.
+Skip reviewers that clearly don't apply to what the diff touches.
 
 **Always run:** correctness-reviewer, simplicity-reviewer, documentation-reviewer.
 
@@ -112,7 +104,7 @@ Note which reviewers were skipped and why, and which extra reviewers ran, in the
 
 ## Step 3 — Assess project context
 
-Before delegating, determine what kind of review rigor is appropriate. Project context is **two independent axes** — they're not a single scale. A small internal compliance tool can be high-consequence and low-scale; a free consumer game can be high-scale and low-consequence. Each axis tunes a different set of reviewers.
+Calibrate review rigor on **two independent axes**, not a single scale: a small internal compliance tool can be high-consequence and low-scale; a free consumer game can be high-scale and low-consequence. Each axis tunes a different set of reviewers.
 
 **Look for explicit signals first.** Check CLAUDE.md and README.md for stated context (e.g., "pre-launch," "early customers," "handles PII," "SOC 2," "internal tool," "consumer-facing at scale"). An explicit statement from the author overrides anything you'd infer from the code.
 
@@ -144,16 +136,7 @@ Pass both axes to each sub-agent so they can calibrate their own severity assess
 
 ## Step 4 — Delegate to selected reviewers in parallel
 
-Launch the selected reviewer sub-agents (from Step 2, including extra reviewers) in a **single message** using the Task tool. Pass each one the changed file list (including untracked files), the PR description (if available), the project context classification from Step 3, and the diff — or, for big diffs, the changed line ranges (see below).
-
-The 7 built-in reviewer agents are:
-1. **correctness-reviewer** — bugs, logic errors, edge cases
-2. **security-reviewer** — vulnerabilities, injection, auth, secrets
-3. **performance-reviewer** — complexity, N+1, allocations, caching
-4. **simplicity-reviewer** — over-engineering, unnecessary abstractions
-5. **ux-reviewer** — confusing APIs, error messages, accessibility
-6. **integration-reviewer** — duplicated functionality, pattern mismatches
-7. **documentation-reviewer** — CLAUDE.md adherence, outdated READMEs, stale docs
+Launch the selected reviewer sub-agents (from Step 2, including extra reviewers) in a **single message**. Pass each one the changed file list (including untracked files), the PR description (if available), the project context classification from Step 3, and the diff — or, for big diffs, the changed line ranges (see below).
 
 Each agent returns findings in this format (extra reviewers too — include it in their prompt):
 ```
@@ -176,7 +159,7 @@ Reviewers read files from the working tree, so this only works when the working 
 
 ## Step 5 — Synthesize
 
-**Bias for simplicity.** Every suggestion you include has a cost: code becomes harder to understand, the author spends time on revisions, and reviewers spend cognitive effort evaluating changes. Only include findings where the benefit clearly outweighs these costs. When in doubt, leave it out.
+**Bias for simplicity.** Every finding you include costs the author revision time and often makes the code harder to understand. Only include findings where the benefit clearly outweighs that cost. When in doubt, leave it out — a report with zero findings is a valid outcome.
 
 1. **Require a concrete failure scenario.** Drop any finding without one, or whose scenario is vague ("could cause issues," "if someone later changes X," "in some edge cases"). A scenario names specific inputs or state and the specific wrong result. This is the strongest filter against speculative findings — apply it first.
 2. **Verify.** For each Critical/Warning finding, read the file yourself with Read. Check whether the existing code already handles the concern (e.g., a framework guard, a runtime guarantee, an upstream validation). If the concern is already addressed, drop it entirely — do not include it with a note that it's "already handled."
@@ -191,12 +174,10 @@ Reviewers read files from the working tree, so this only works when the working 
    - The scenario is theoretically possible but extremely unlikely in practice
    - The fix adds complexity (error handling, validation, abstractions) that makes the code harder to read and maintain
    - The finding is defensive programming against a situation that the system's architecture already prevents
-6. **Recalibrate severity.** Apply both project-context axes from Step 3. Use **scale** to tune performance/architecture findings (downgrade for pre-launch, promote for at-scale) and **consequence** to tune correctness/security findings (be lenient for low-consequence, promote Suggestions to Warnings for high-consequence). The two axes are independent — a high-consequence pre-launch tool still warrants strict security review even though performance findings should be soft.
+6. **Recalibrate severity.** Apply the Step 3 calibrations, each axis independently: **scale** tunes performance/architecture findings, **consequence** tunes correctness/security findings.
 7. **De-duplicate.** If multiple agents flagged the same issue, keep the most specific version.
 8. **Drop downstream noise.** If fixing a Critical would resolve a Suggestion, drop the Suggestion.
 9. **Prioritize.** Critical → Warning → Suggestion. Within each severity, group by file.
-
-A report with zero findings is a valid outcome. A short report with only high-impact findings is better than a long report that wastes the author's time.
 
 ## Step 6 — Report
 
@@ -248,6 +229,5 @@ gh pr review $PR_NUMBER --comment --body-file /tmp/review-report.md
 
 ### Tool usage notes
 
-- Use the **Grep** and **Read** tools to search and read files — do not shell out to `grep`, `cat`, or `find` via Bash.
-- Only use **Bash** for `git` and `gh` commands.
-- **Do not chain commands** with `&&` or `;` — run each `git` or `gh` command as a separate Bash call.
+- **Bash** is only for `git` and `gh` commands (the only ones this skill is allowed), one command per call — no chaining with `&&` or `;`.
+- Search and read files with **Grep**, **Glob**, and **Read**, not `grep`, `cat`, or `find`.

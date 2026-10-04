@@ -62,10 +62,10 @@ A bare name runs a sub-agent the project defines (e.g., `.claude/agents/spec-con
 ### carly-product-req
 
 Guided co-authoring of a lightweight product requirements doc — aimed at non-technical teammates (PMs, designers, founders) scoping a new idea. Works through a short template section by section:
-- **Problem Statement** — the pain or opportunity, not the solution
+- **Problem Statement** — the pain real users are experiencing, not the solution
 - **Users** — who it's for and what they're trying to accomplish
-- **Goals & Success Signals** — what changes if this works
-- **Scope** — what's in and what's explicitly out
+- **Goals & Non-Goals** — what changes if this works, and what's explicitly out of scope
+- **How We'll Know It Worked** — one or two lightweight success signals
 - **Open Questions** — unknowns to resolve before building
 
 Produces a ~1-page doc that's ready to hand off as input to a tech spec.

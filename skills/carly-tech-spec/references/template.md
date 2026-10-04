@@ -13,18 +13,7 @@ Use this template to scaffold the spec document. Replace bracketed placeholders 
 
 ## Problem Statement
 
-> This is the most important section. Describe a pain that real users or customers are experiencing in their lives or work today — something that's broken, frustrating, costly, or impossible for them right now. The test: if no one ever built this product, would someone still be hurting? If yes, you have a problem worth solving.
->
-> Answer these questions:
-> - Who is feeling this pain, and how do you know? (What have they said or done?)
-> - What are they trying to accomplish, and what's getting in their way?
-> - What's the cost to them of the status quo — time, money, missed outcomes, frustration?
-> - What do they do today instead? (Workarounds, competitors, giving up.)
-> - Why now? What's changed for them that makes this more pressing?
->
-> Keep the focus on the user or customer throughout. Business-side outcomes you want (revenue, growth, launches) are goals, not problems — they belong in the Goals section. If the only "problem" you can name is "we want to monetize" or "we want to grow," the spec is likely premature; the user problem isn't clear enough yet.
->
-> Cost/revenue framings deserve extra scrutiny. "Infra costs outpace revenue" is a symptom, not a problem. Ask: is the infra solving a real user problem? If yes, that user problem is the problem statement (and monetization is a solution). If no, the answer is to stop spending the money, not to charge for it.
+> The most important section. Describe a pain that real users or customers are experiencing today — who feels it, what it costs them, what they do instead, and why now. Business-side outcomes you want (revenue, growth, launches) are goals, not problems — they belong in the Goals section.
 >
 > Keep it to 1-3 paragraphs. Don't name the proposed solution here.
 
